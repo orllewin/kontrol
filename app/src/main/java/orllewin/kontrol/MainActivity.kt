@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
@@ -36,26 +37,33 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import orllewin.kontrol.datasource.ShortcutDatasource
-import orllewin.kontrol.model.Shortcut
-import orllewin.kontrol.repository.ShortcutRepository
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import orllewin.kontrol.datastore.Shortcut
 import orllewin.kontrol.ui.theme.KontrolTheme
 
 class MainActivity : ComponentActivity() {
 
-    val viewModel: KontrolViewModel = KontrolViewModel(ShortcutRepository(ShortcutDatasource()))
+    private val viewModel: KontrolViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             KontrolTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Shortcuts(viewModel)
-                    //Greeting("Android")
+                    val navController = rememberNavController()
+
+                    NavHost(navController = navController, startDestination = "shortcuts") {
+                        composable("shortcuts") { Shortcuts(viewModel, navController) }
+                        composable("edit/{shortcutId}", arguments = listOf(navArgument("shortcutId"){})){ backstackEntry ->
+                            EditShortcut(viewModel, backstackEntry.arguments?.getString("shortcutId")) }
+                    }
                 }
             }
         }
@@ -63,21 +71,26 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Shortcuts(viewModel: KontrolViewModel){
-    val shortcutsState by remember(viewModel) {
-        viewModel.shortcuts
+fun EditShortcut(viewModel: KontrolViewModel, shortcutId: String?){
+   //todo
+}
+
+@Composable
+fun Shortcuts(viewModel: KontrolViewModel, navController: NavHostController){
+    val groupsState by remember(viewModel) {
+        viewModel.groupsFlow
     }.collectAsState(listOf())
 
     LazyVerticalGrid(
         modifier = Modifier.padding(top = 4.dp, start = 4.dp, end = 4.dp),
         columns = GridCells.Fixed(2)
     ) {
-        shortcutsState.forEach { group ->
+        groupsState?.forEach { group ->
             item(span = { GridItemSpan(2) }){
                 Row(horizontalArrangement = Arrangement.SpaceBetween) {
                     Text(
                         modifier = Modifier.padding(top = 16.dp, start = 16.dp, bottom = 16.dp),
-                        text = group.title)
+                        text = group.shortcutGroup.title)
                     IconButton(
                         onClick = {}
                     ){
@@ -86,7 +99,7 @@ fun Shortcuts(viewModel: KontrolViewModel){
                 }
             }
             items(group.shortcuts.size) { shortcutIndex ->
-                ShortcutTile(group.shortcuts[shortcutIndex]) { shortcut ->
+                ShortcutTile(navController, group.shortcuts[shortcutIndex]) { shortcut: Shortcut ->
                     viewModel.execute(shortcut)
                 }
             }
@@ -96,7 +109,11 @@ fun Shortcuts(viewModel: KontrolViewModel){
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ShortcutTile(shortcut: Shortcut, onClick:(shortCut: Shortcut) -> Unit){
+fun ShortcutTile(
+    navController: NavHostController,
+    shortcut: Shortcut,
+    onClick: (shortCut: Shortcut) -> Unit
+){
     val context = LocalContext.current
     Box(modifier = Modifier
         .fillMaxSize()
@@ -118,6 +135,8 @@ fun ShortcutTile(shortcut: Shortcut, onClick:(shortCut: Shortcut) -> Unit){
                     Toast
                         .makeText(context, "Edit: ${shortcut.title} (not implemented)", Toast.LENGTH_SHORT)
                         .show()
+
+                    navController.navigate("edit/${shortcut.shortcutId}")
                 },
                 onLongClickLabel = stringResource(R.string.edit_shortcut)
             ),
@@ -132,15 +151,15 @@ fun ShortcutTile(shortcut: Shortcut, onClick:(shortCut: Shortcut) -> Unit){
             text = shortcut.title,
             color = MaterialTheme.colorScheme.onPrimary
         )
-        shortcut.icon?.let { imageVector ->
-            Icon(
-                modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .padding(16.dp),
-                imageVector = imageVector,
-                contentDescription = stringResource(id = R.string.shortcut_icon),
-            tint = MaterialTheme.colorScheme.onPrimary)
-        }
+//        shortcut.icon?.let { imageVector ->
+//            Icon(
+//                modifier = Modifier
+//                    .align(Alignment.TopStart)
+//                    .padding(16.dp),
+//                imageVector = imageVector,
+//                contentDescription = stringResource(id = R.string.shortcut_icon),
+//            tint = MaterialTheme.colorScheme.onPrimary)
+//        }
     }
 }
 

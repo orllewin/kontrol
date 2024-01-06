@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Kontrol</string>
+    <string name="app_name">control</string>
     <string name="edit_shortcut">Edit shortcut</string>
     <string name="edit_group">Edit group</string>
     <string name="shortcut_icon">Shortcut icon</string>
