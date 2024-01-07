@@ -4,20 +4,11 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
-import okhttp3.Call
-import okhttp3.Callback
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.Response
 import orllewin.kontrol.datastore.GroupWithShortcut
 import orllewin.kontrol.datastore.Shortcut
-import orllewin.kontrol.datastore.ShortcutGroup
 import orllewin.kontrol.repository.ShortcutsRepository
-import java.io.IOException
 import javax.inject.Inject
 
 

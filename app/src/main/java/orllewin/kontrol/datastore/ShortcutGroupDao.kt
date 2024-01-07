@@ -13,5 +13,5 @@ interface ShortcutGroupDao {
 
     @Transaction
     @Query("SELECT * FROM shortcut_groups")
-    suspend fun getAllGroupsWithShortcuts(): Flow<List<GroupWithShortcut>>
+    fun getAllGroupsWithShortcuts(): Flow<List<GroupWithShortcut>>
 }

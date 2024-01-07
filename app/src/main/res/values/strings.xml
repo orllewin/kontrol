@@ -3,4 +3,6 @@
     <string name="edit_shortcut">Edit shortcut</string>
     <string name="edit_group">Edit group</string>
     <string name="shortcut_icon">Shortcut icon</string>
+    <string name="no_shortcuts">You don\'t have any shortcuts</string>
+
 </resources>

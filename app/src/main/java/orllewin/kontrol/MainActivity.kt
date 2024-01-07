@@ -42,12 +42,18 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import dagger.hilt.android.AndroidEntryPoint
 import orllewin.kontrol.datastore.Shortcut
+import orllewin.kontrol.presentation.edit.EditShortcut
+import orllewin.kontrol.presentation.empty.Empty
 import orllewin.kontrol.ui.theme.KontrolTheme
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private val viewModel: KontrolViewModel by viewModels()
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,6 +69,8 @@ class MainActivity : ComponentActivity() {
                         composable("shortcuts") { Shortcuts(viewModel, navController) }
                         composable("edit/{shortcutId}", arguments = listOf(navArgument("shortcutId"){})){ backstackEntry ->
                             EditShortcut(viewModel, backstackEntry.arguments?.getString("shortcutId")) }
+                        composable("new", arguments = listOf(navArgument("shortcutId"){})){ backstackEntry ->
+                            EditShortcut(viewModel) }
                     }
                 }
             }
@@ -71,36 +79,39 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun EditShortcut(viewModel: KontrolViewModel, shortcutId: String?){
-   //todo
-}
-
-@Composable
 fun Shortcuts(viewModel: KontrolViewModel, navController: NavHostController){
     val groupsState by remember(viewModel) {
         viewModel.groupsFlow
     }.collectAsState(listOf())
 
-    LazyVerticalGrid(
-        modifier = Modifier.padding(top = 4.dp, start = 4.dp, end = 4.dp),
-        columns = GridCells.Fixed(2)
-    ) {
-        groupsState?.forEach { group ->
-            item(span = { GridItemSpan(2) }){
-                Row(horizontalArrangement = Arrangement.SpaceBetween) {
-                    Text(
-                        modifier = Modifier.padding(top = 16.dp, start = 16.dp, bottom = 16.dp),
-                        text = group.shortcutGroup.title)
-                    IconButton(
-                        onClick = {}
-                    ){
-                        Icon(Icons.Filled.MoreVert, stringResource(id = R.string.edit_group))
+    if(groupsState.isNullOrEmpty()){
+        Empty(navController)
+    }else {
+        LazyVerticalGrid(
+            modifier = Modifier.padding(top = 4.dp, start = 4.dp, end = 4.dp),
+            columns = GridCells.Fixed(2)
+        ) {
+            groupsState?.forEach { group ->
+                item(span = { GridItemSpan(2) }) {
+                    Row(horizontalArrangement = Arrangement.SpaceBetween) {
+                        Text(
+                            modifier = Modifier.padding(top = 16.dp, start = 16.dp, bottom = 16.dp),
+                            text = group.shortcutGroup.title
+                        )
+                        IconButton(
+                            onClick = {}
+                        ) {
+                            Icon(Icons.Filled.MoreVert, stringResource(id = R.string.edit_group))
+                        }
                     }
                 }
-            }
-            items(group.shortcuts.size) { shortcutIndex ->
-                ShortcutTile(navController, group.shortcuts[shortcutIndex]) { shortcut: Shortcut ->
-                    viewModel.execute(shortcut)
+                items(group.shortcuts.size) { shortcutIndex ->
+                    ShortcutTile(
+                        navController,
+                        group.shortcuts[shortcutIndex]
+                    ) { shortcut: Shortcut ->
+                        viewModel.execute(shortcut)
+                    }
                 }
             }
         }
