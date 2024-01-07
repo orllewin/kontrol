@@ -69,7 +69,7 @@ class MainActivity : ComponentActivity() {
                         composable("shortcuts") { Shortcuts(viewModel, navController) }
                         composable("edit/{shortcutId}", arguments = listOf(navArgument("shortcutId"){})){ backstackEntry ->
                             EditShortcut(viewModel, backstackEntry.arguments?.getString("shortcutId")) }
-                        composable("new", arguments = listOf(navArgument("shortcutId"){})){ backstackEntry ->
+                        composable("create", arguments = listOf(navArgument("shortcutId"){})){ backstackEntry ->
                             EditShortcut(viewModel) }
                     }
                 }
