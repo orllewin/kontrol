@@ -66,8 +66,6 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val navController = rememberNavController()
 
-
-
                     NavHost(navController = navController, startDestination = "shortcuts") {
                         composable("shortcuts") { Shortcuts(viewModel, navController) }
                         composable("edit/{shortcutId}", arguments = listOf(navArgument("shortcutId"){})){ backstackEntry ->

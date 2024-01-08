@@ -4,6 +4,9 @@
     <string name="edit_group">Edit group</string>
     <string name="shortcut_icon">Shortcut icon</string>
     <string name="no_shortcuts">You don\'t have any controls</string>
-    <string name="create_a_shortcut">Create a new request</string>
+    <string name="create_a_shortcut">Create a new control</string>
+    <string name="new_control">New control</string>
+    <string name="url">Url</string>
+    <string name="request_type">Request type</string>
 
 </resources>

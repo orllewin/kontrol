@@ -41,7 +41,7 @@ fun Empty(navController: NavHostController?){
                 modifier = Modifier.align(Alignment.CenterHorizontally),
                 text = stringResource(id = R.string.no_shortcuts)
             )
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(48.dp))
             Button(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
                 onClick = {
