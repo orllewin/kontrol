@@ -7,7 +7,7 @@ import orllewin.kontrol.datastore.ShortcutDao
 import orllewin.kontrol.datastore.ShortcutGroup
 import orllewin.kontrol.datastore.ShortcutGroupDao
 
-@Database(entities = [ShortcutGroup::class, Shortcut::class], version = 2)
+@Database(entities = [ShortcutGroup::class, Shortcut::class], version = 3)
 abstract class ShortcutsDatabase: RoomDatabase() {
     abstract fun shortcutGroupDao(): ShortcutGroupDao
     abstract fun shortcutDao(): ShortcutDao

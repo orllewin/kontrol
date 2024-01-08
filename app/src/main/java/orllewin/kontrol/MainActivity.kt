@@ -48,6 +48,7 @@ import orllewin.kontrol.presentation.edit.EditShortcut
 import orllewin.kontrol.presentation.empty.Empty
 import orllewin.kontrol.ui.theme.KontrolTheme
 
+
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
@@ -65,11 +66,13 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val navController = rememberNavController()
 
+
+
                     NavHost(navController = navController, startDestination = "shortcuts") {
                         composable("shortcuts") { Shortcuts(viewModel, navController) }
                         composable("edit/{shortcutId}", arguments = listOf(navArgument("shortcutId"){})){ backstackEntry ->
                             EditShortcut(viewModel, backstackEntry.arguments?.getString("shortcutId")) }
-                        composable("create", arguments = listOf(navArgument("shortcutId"){})){ backstackEntry ->
+                        composable("create"){ backstackEntry ->
                             EditShortcut(viewModel) }
                     }
                 }
